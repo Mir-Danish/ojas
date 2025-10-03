@@ -20,7 +20,7 @@ const UserBottomBar = () => {
    
 
            
-           <TouchableOpacity onPress={()=>navigation.navigate("UserBottomPage")} activeOpacity={0.7}>
+           <TouchableOpacity onPress={()=>navigation.navigate("UserProfilePage")} activeOpacity={0.7}>
            <AntDesign name="user" size={24} color="white" />
            </TouchableOpacity>
     </View>

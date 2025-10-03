@@ -11,6 +11,11 @@ import PractitionerHomeScreen from './screens/auth/practitioner/PractitionerHome
 import UserHomeScreen from './screens/auth/user/UserHomeScreen';
 import UserBottomBar from './screens/auth/user/UserBottomBar/UserBottomBar';
 import CollectUserDetails from './screens/auth/user/CollectUserDetails';
+import UserTherapyState from "./screens/auth/user/UserTherapyState";
+import UserProgressScreen from './screens/auth/user/UserBottomBar/UserProgressScreen';
+import UserProfileScreen from './screens/auth/user/UserBottomBar/UserProfileScreen';
+
+
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +39,8 @@ const AppNavigation = () => {
 
         <Stack.Screen name='UserBottomPage' component={UserBottomBar} />
         <Stack.Screen name='CollectUserDetailsPage' component={CollectUserDetails} />
+        <Stack.Screen name="UserTherapyStatusPage" component={UserTherapyState} />
+        <Stack.Screen name='UserProfilePage' component={UserProfileScreen} />
 
     </Stack.Navigator>
   )
