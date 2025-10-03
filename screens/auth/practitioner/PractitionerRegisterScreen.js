@@ -5,12 +5,14 @@ import { getFirestore } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig"     //"./firebaseConfig";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
-const PractitionerLoginScreen = () => {
+const PractitionerRegisterScreen = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("patient"); // default role
+  const [role, setRole] = useState("practitioner"); // default role for this screen
 
   const handleRegister = async () => {
     try {
@@ -20,17 +22,27 @@ const PractitionerLoginScreen = () => {
       // Save user role in Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
-      // 'patient' or 'practitioner'
+        role: role // 'patient' or 'practitioner'
       });
 
-      alert("Registered successfully!");
-      navigation.navigate("Login");
+      // Persist minimal session/context
+      await AsyncStorage.multiSet([
+        ['uid', user.uid],
+        ['userRole', role],
+        ['userEmail', user.email ?? ''],
+      ]);
+
+      Alert.alert("Success", "Registered successfully!", [
+        { text: "OK", onPress: () => navigation.replace("PractitionerLoginPage") }
+      ]);
     } catch (error) {
-      alert(error.message);
+      Alert.alert("Registration Failed", error.message ?? String(error));
     }
   }
   return (
     <View style={styles.container}>
+
+      <Text>Practitioner Registration</Text>
       <Text>Email</Text>
       <TextInput style={styles.input} value={email} onChangeText={setEmail} />
 
@@ -51,14 +63,14 @@ const PractitionerLoginScreen = () => {
       /> */}
 
       <Button title="Register" onPress={handleRegister} />
-      <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
+      <Text style={styles.link} onPress={() => navigation.navigate("PractitionerLoginPage")}>
         Already have an account? Login
       </Text>
     </View>
   )
 }
 
-export default PractitionerLoginScreen
+export default PractitionerRegisterScreen
 
 const styles = StyleSheet.create({
   container :{

@@ -1,34 +1,49 @@
-import { View, Text,Platform,StatusBar,StyleSheet,TextInput,Button } from 'react-native'
+
+import { View, TextInput, Button, Text, StyleSheet } from "react-native";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from 'react'
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-// import { createUserWithEmailAndPassword } from "firebase/auth";
-// import { doc, setDoc } from "firebase/firestore";
-// import { auth, db } from "./firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig" 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
-const PractitionerLoginScreen = () => {
-
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("patient"); // default role
 
-  const handleRegister = async () => {
+  const handleLogin = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Save user role in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-      // 'patient' or 'practitioner'
-      });
+      // Get user role from Firestore
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
 
-      alert("Registered successfully!");
-      navigation.navigate("Login");
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        const role = userData.role;
+
+        // Persist minimal session/context
+        await AsyncStorage.multiSet([
+          ['uid', user.uid],
+          ['userRole', role ?? ''],
+          ['userEmail', user.email ?? ''],
+        ]);
+
+        if (role === "practitioner") {
+          navigation.replace("PractitionerHome");
+        } else {
+          navigation.replace("PatientHome");
+        }
+      } else {
+        Alert.alert("Login Issue", "No user data found.");
+      }
     } catch (error) {
-      alert(error.message);
+      Alert.alert("Login Failed", error.message ?? String(error));
     }
-  }
+  };
+
   return (
     <View style={styles.container}>
       <Text>Email</Text>
@@ -42,30 +57,17 @@ const PractitionerLoginScreen = () => {
         onChangeText={setPassword}
       />
 
-      {/* <Text>Role (patient / practitioner)</Text> */}
-      {/* <TextInput
-        style={styles.input}
-        value={role}
-        onChangeText={setRole}
-        placeholder="patient or practitioner"
-      /> */}
-
-      <Button title="Register" onPress={handleRegister} />
-      <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
-        Already have an account? Login
+      <Button title="Login" onPress={handleLogin} />
+      <Text style={styles.link} onPress={() => navigation.navigate("PractitionerRegisterPage")}>
+        Don't have an account? Register
       </Text>
     </View>
-  )
+  );
 }
 
-export default PractitionerLoginScreen
-
 const styles = StyleSheet.create({
-  container :{
-    flex: 1,
-   paddingTop:Platform.OS === "android" ? StatusBar.currentHeight:0,
-  },
-   input: {
+  container: { flex: 1, padding: 20, justifyContent: "center" },
+  input: {
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
@@ -77,4 +79,4 @@ const styles = StyleSheet.create({
     color: "blue",
     textAlign: "center",
   },
-})
+});
