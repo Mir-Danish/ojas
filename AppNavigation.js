@@ -1,6 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import UserLoginScreen from  "./screens/auth/user/UserLoginScreen"
+
+import UserregisterScreen from './screens/auth/user/UserregisterScreen';
+import PractitionerRegisterScreen from "./screens/auth/practitioner/PractitionerRegisterScreen"
+import PractitionerLoginScreen from "./screens/auth/practitioner/PractitionerLoginScreen"
+
 
 const Stack = createNativeStackNavigator()
 
@@ -12,8 +18,8 @@ const AppNavigation = () => {
         <Stack.Screen name='SplahScreenPage' component={SplashScreen} />
 
         
-        <Stack.Screen name='PatientLoginPage' component={PatientLoginScreen} />
-        <Stack.Screen name='PatientRegisterPage' component={PatientRegisterScreen} />
+        <Stack.Screen name='PatientLoginPage' component={UserLoginScreen} />
+        <Stack.Screen name='PatientRegisterPage' component={UserregisterScreen} />
 
          <Stack.Screen name='PractitionerLoginPage' component={PractitionerLoginScreen} />
         <Stack.Screen name='PractitionerRegisterPage' component={PractitionerRegisterScreen} />
