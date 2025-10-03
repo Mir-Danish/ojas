@@ -8,6 +8,7 @@ import PractitionerRegisterScreen from "./screens/auth/practitioner/Practitioner
 import PractitionerLoginScreen from "./screens/auth/practitioner/PractitionerLoginScreen"
 import SplashScreen from "./screens/auth/SplashScreen"
 import PractitionerHomeScreen from './screens/auth/practitioner/PractitionerHomeScreen';
+import UserHomeScreen from './screens/auth/user/UserHomeScreen';
 
 const Stack = createNativeStackNavigator()
 
@@ -22,6 +23,7 @@ const AppNavigation = () => {
 
         <Stack.Screen name='PatientLoginPage' component={UserLoginScreen} />
         <Stack.Screen name='PatientRegisterPage' component={UserregisterScreen} />
+        <Stack.Screen name='PatientHomePage' component={UserHomeScreen} />
 
          <Stack.Screen name='PractitionerLoginPage' component={PractitionerLoginScreen} />
         <Stack.Screen name='PractitionerRegisterPage' component={PractitionerRegisterScreen} />
