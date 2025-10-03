@@ -1,4 +1,4 @@
-import { View, Text, Platform, StatusBar, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { View, Text, Platform, StatusBar, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -13,9 +13,42 @@ const PractitionerRegisterScreen = ({ navigation }) => {
   const [qualification, setQualification] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const role = "practitioner"; // hardcoded role for practitioner registration
 
   const handleRegister = async () => {
+    // Validation
+    if (!name.trim()) {
+      Alert.alert("Validation Error", "Please enter your full name.");
+      return;
+    }
+    if (!qualification.trim()) {
+      Alert.alert("Validation Error", "Please enter your qualification.");
+      return;
+    }
+    if (!email.trim()) {
+      Alert.alert("Validation Error", "Please enter your email address.");
+      return;
+    }
+    if (!password.trim()) {
+      Alert.alert("Validation Error", "Please enter your password.");
+      return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Validation Error", "Please enter a valid email address.");
+      return;
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      Alert.alert("Validation Error", "Password must be at least 6 characters long.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -41,7 +74,22 @@ const PractitionerRegisterScreen = ({ navigation }) => {
         { text: "OK", onPress: () => navigation.replace("PractitionerLoginPage") }
       ]);
     } catch (error) {
-      Alert.alert("Registration Failed", error.message ?? String(error));
+      // Handle specific Firebase errors
+      let errorMessage = "Registration failed. Please try again.";
+      
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "This email is already registered. Please login or use a different email.";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email address format.";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "Password is too weak. Please use a stronger password.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      Alert.alert("Registration Failed", errorMessage);
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -110,11 +158,16 @@ const PractitionerRegisterScreen = ({ navigation }) => {
           </View>
 
           <TouchableOpacity 
-            style={styles.registerButton} 
+            style={[styles.registerButton, loading && styles.buttonDisabled]} 
             onPress={handleRegister}
             activeOpacity={0.8}
+            disabled={loading}
           >
-            <Text style={styles.registerButtonText}>Register</Text>
+            {loading ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <Text style={styles.registerButtonText}>Register</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -201,6 +254,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   footer: {
     flexDirection: 'row',

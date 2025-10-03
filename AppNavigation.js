@@ -9,17 +9,19 @@ import PractitionerLoginScreen from "./screens/auth/practitioner/PractitionerLog
 import SplashScreen from "./screens/auth/SplashScreen"
 import PractitionerHomeScreen from './screens/auth/practitioner/PractitionerHomeScreen';
 import UserHomeScreen from './screens/auth/user/UserHomeScreen';
+import UserBottomBar from './screens/auth/user/UserBottomBar/UserBottomBar';
+import CollectUserDetails from './screens/auth/user/CollectUserDetails';
 
 const Stack = createNativeStackNavigator()
 
 
 const AppNavigation = () => {
   return (
-    <Stack.Navigator initialRouteName= "PractitionerHomeScreen" screenOptions={{
+    <Stack.Navigator initialRouteName= "PatientHomePage" screenOptions={{
       headerShown:false
     }}>
 
-        <Stack.Screen name='PractitionerHomeScreen' component={PractitionerHomeScreen} />
+        {/* <Stack.Screen name=PractitionerHomePage" component={PractitionerHomeScreen} /> */}
 
         <Stack.Screen name='PatientLoginPage' component={UserLoginScreen} />
         <Stack.Screen name='PatientRegisterPage' component={UserregisterScreen} />
@@ -29,6 +31,9 @@ const AppNavigation = () => {
         <Stack.Screen name='PractitionerRegisterPage' component={PractitionerRegisterScreen} />
 
         <Stack.Screen name='PractitionerHomePage' component={PractitionerHomeScreen} />
+
+        <Stack.Screen name='UserBottomPage' component={UserBottomBar} />
+        <Stack.Screen name='CollectUserDetailsPage' component={CollectUserDetails} />
 
     </Stack.Navigator>
   )

@@ -8,7 +8,7 @@ import {
   TouchableOpacity 
 } from 'react-native'
 import React from 'react'
-import BottomBar from './PractitionerBottomBar'
+import BottomBar from './practitionerbotttombar/PractitionerBottomBar'
 const PractitionerHomeScreen = () => {
   // Sample patient data
   const patients = [
@@ -38,6 +38,7 @@ const PractitionerHomeScreen = () => {
   );
 
   return (
+    <>
     <View style={styles.container}>
       <Text style={styles.heading}>Patients List</Text>
       <FlatList
@@ -46,8 +47,10 @@ const PractitionerHomeScreen = () => {
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
-      <BottomBar/>
+      
     </View>
+    <BottomBar/>
+    </>
   )
 }
 

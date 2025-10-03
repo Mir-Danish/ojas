@@ -1,5 +1,5 @@
 
-import { View, TextInput, Text, StyleSheet, Platform, StatusBar, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
+import { View, TextInput, Text, StyleSheet, Platform, StatusBar, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from 'react'
 import { doc, getDoc } from "firebase/firestore";
@@ -10,8 +10,27 @@ import { Alert } from 'react-native';
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    // Validation
+    if (!email.trim()) {
+      Alert.alert("Validation Error", "Please enter your email address.");
+      return;
+    }
+    if (!password.trim()) {
+      Alert.alert("Validation Error", "Please enter your password.");
+      return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Validation Error", "Please enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -43,6 +62,8 @@ export default function LoginScreen({ navigation }) {
       }
     } catch (error) {
       Alert.alert("Login Failed", error.message ?? String(error));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,11 +109,16 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           <TouchableOpacity 
-            style={styles.loginButton} 
+            style={[styles.loginButton, loading && styles.buttonDisabled]} 
             onPress={handleLogin}
             activeOpacity={0.8}
+            disabled={loading}
           >
-            <Text style={styles.loginButtonText}>Login</Text>
+            {loading ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <Text style={styles.loginButtonText}>Login</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -106,6 +132,7 @@ export default function LoginScreen({ navigation }) {
     </KeyboardAvoidingView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -177,6 +204,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   footer: {
     flexDirection: 'row',

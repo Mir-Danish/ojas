@@ -1,4 +1,4 @@
-import { View, TextInput, Text, StyleSheet, Platform, StatusBar, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
+import { View, TextInput, Text, StyleSheet, Platform, StatusBar, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from 'react'
 import { doc, getDoc } from "firebase/firestore";
@@ -8,8 +8,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function UserLoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    // Validation
+    if (!email.trim()) {
+      Alert.alert("Validation Error", "Please enter your email address.");
+      return;
+    }
+    if (!password.trim()) {
+      Alert.alert("Validation Error", "Please enter your password.");
+      return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Validation Error", "Please enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -40,7 +59,28 @@ export default function UserLoginScreen({ navigation }) {
         Alert.alert("Login Issue", "No user data found.");
       }
     } catch (error) {
-      Alert.alert("Login Failed", error.message ?? String(error));
+      // Handle specific Firebase authentication errors
+      let errorMessage = "Login failed. Please try again.";
+      
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = "No account found with this email. Please register first.";
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = "Incorrect password. Please try again.";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email address format.";
+      } else if (error.code === 'auth/user-disabled') {
+        errorMessage = "This account has been disabled. Please contact support.";
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many failed login attempts. Please try again later.";
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = "Network error. Please check your internet connection.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      Alert.alert("Login Failed", errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,11 +126,16 @@ export default function UserLoginScreen({ navigation }) {
           </View>
 
           <TouchableOpacity 
-            style={styles.loginButton} 
+            style={[styles.loginButton, loading && styles.buttonDisabled]} 
             onPress={handleLogin}
             activeOpacity={0.8}
+            disabled={loading}
           >
-            <Text style={styles.loginButtonText}>Login</Text>
+            {loading ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <Text style={styles.loginButtonText}>Login</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -175,6 +220,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   footer: {
     flexDirection: 'row',
