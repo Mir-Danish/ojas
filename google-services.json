@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "86561541611",
+    "project_id": "ojasbackend",
+    "storage_bucket": "ojasbackend.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86561541611:android:c7ffbb46decf6f349bddae",
+        "android_client_info": {
+          "package_name": "Ojas.Backend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0taUu74Q3vVnI3kgZAMbNbzIQi3JhL_Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
