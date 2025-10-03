@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   form: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
-    padding: 24,
+    padding: 25,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
