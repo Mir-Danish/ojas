@@ -4,6 +4,8 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import BottomBar from '../practitioner/practitionerbotttombar/PractitionerBottomBar';
 
 const CollectUserDetails = ({ navigation }) => {
   const route = useRoute();
@@ -21,6 +23,49 @@ const CollectUserDetails = ({ navigation }) => {
   const [reasonForTherapy, setReasonForTherapy] = useState('');
   const [remarks, setRemarks] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // Date and Time states
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  // Generate unique session ID
+  const generateSessionId = () => {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 10000);
+    return `SESSION-${timestamp}-${random}`;
+  };
+
+  const onDateChange = (event, date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
+  const onTimeChange = (event, time) => {
+    setShowTimePicker(Platform.OS === 'ios');
+    if (time) {
+      setSelectedTime(time);
+    }
+  };
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
+  const formatTime = (time) => {
+    return time.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
 
   const handleSubmit = async () => {
     // Validation
@@ -49,13 +94,27 @@ const CollectUserDetails = ({ navigation }) => {
       return;
     }
 
+    // Check if selected date is in the past
+    const now = new Date();
+    const selectedDateTime = new Date(selectedDate);
+    selectedDateTime.setHours(selectedTime.getHours(), selectedTime.getMinutes(), 0, 0);
+    
+    if (selectedDateTime < now) {
+      Alert.alert("Validation Error", "Please select a future date and time for the session.");
+      return;
+    }
+
     setLoading(true);
     try {
       // Get current user ID from AsyncStorage
       const userId = await AsyncStorage.getItem('uid');
       
-      // Save consultation request to Firestore
-      await addDoc(collection(db, "consultationRequests"), {
+      // Generate unique session ID
+      const sessionId = generateSessionId();
+      
+      // Save therapy session to Firestore
+      await addDoc(collection(db, "therapySessions"), {
+        sessionId: sessionId,
         patientId: userId,
         practitionerId: practitioner?.id || '',
         practitionerName: practitioner?.name || 'N/A',
@@ -70,26 +129,29 @@ const CollectUserDetails = ({ navigation }) => {
         disease: disease,
         reasonForTherapy: reasonForTherapy,
         remarks: remarks,
+        scheduledDate: selectedDate.toISOString(),
+        scheduledTime: selectedTime.toISOString(),
         status: 'pending',
         createdAt: serverTimestamp()
       });
 
       Alert.alert(
         "Success", 
-        "Your details have been submitted successfully! The practitioner will contact you soon.",
+        `Your therapy session has been scheduled!\n\nSession ID: ${sessionId}\nDate: ${formatDate(selectedDate)}\nTime: ${formatTime(selectedTime)}\n\nThe practitioner will confirm your appointment soon.`,
         [
-          { text: "OK", onPress: () => navigation.goBack() }
+          { text: "OK", onPress: () => navigation.goback()}
         ]
       );
     } catch (error) {
-      console.error("Error submitting details:", error);
-      Alert.alert("Error", "Failed to submit details. Please try again.");
+      console.error("Error submitting session:", error);
+      Alert.alert("Error", "Failed to schedule session. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
+    <>
     <KeyboardAvoidingView 
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -100,9 +162,9 @@ const CollectUserDetails = ({ navigation }) => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Consultation Request</Text>
+          <Text style={styles.title}>Schedule Therapy Session</Text>
           {practitioner && (
-            <Text style={styles.subtitle}>For Dr. {practitioner.name}</Text>
+            <Text style={styles.subtitle}>With Dr. {practitioner.name}</Text>
           )}
         </View>
 
@@ -239,6 +301,47 @@ const CollectUserDetails = ({ navigation }) => {
             />
           </View>
 
+          {/* Date Picker */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Preferred Session Date *</Text>
+            <TouchableOpacity 
+              style={styles.dateTimeButton}
+              onPress={() => setShowDatePicker(true)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.dateTimeText}>{formatDate(selectedDate)}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={selectedDate}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={onDateChange}
+                minimumDate={new Date()}
+              />
+            )}
+          </View>
+
+          {/* Time Picker */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Preferred Session Time *</Text>
+            <TouchableOpacity 
+              style={styles.dateTimeButton}
+              onPress={() => setShowTimePicker(true)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.dateTimeText}>{formatTime(selectedTime)}</Text>
+            </TouchableOpacity>
+            {showTimePicker && (
+              <DateTimePicker
+                value={selectedTime}
+                mode="time"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={onTimeChange}
+              />
+            )}
+          </View>
+
           <TouchableOpacity 
             style={[styles.submitButton, loading && styles.buttonDisabled]}
             onPress={handleSubmit}
@@ -248,12 +351,14 @@ const CollectUserDetails = ({ navigation }) => {
             {loading ? (
               <ActivityIndicator color="#ffffff" size="small" />
             ) : (
-              <Text style={styles.submitButtonText}>Submit Request</Text>
+              <Text style={styles.submitButtonText}>Schedule Session</Text>
             )}
           </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    <BottomBar />
+    </>
   );
 };
 
@@ -337,5 +442,18 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     opacity: 0.6,
+  },
+  dateTimeButton: {
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    backgroundColor: '#fafafa',
+    padding: 12,
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
+  dateTimeText: {
+    fontSize: 15,
+    color: '#1a1a1a',
+    fontWeight: '500',
   },
 });
