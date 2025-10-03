@@ -1,8 +1,10 @@
 // WelcomeScreen.js
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function WelcomeScreen({ navigation }) {
+const WelcomeScreen  = () => {
+  const navigation = useNavigation()
   return (
     <View style={styles.container}>
       {/* Get Started Text */}
@@ -11,7 +13,7 @@ export default function WelcomeScreen({ navigation }) {
       {/* Practitioner Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => alert("Go to Practitioner screen")}
+        onPress={()=>navigation.navigate("PractitionerRegisterPage")}
       >
         <Text style={styles.buttonText}>Practitioner</Text>
       </TouchableOpacity>
@@ -19,7 +21,7 @@ export default function WelcomeScreen({ navigation }) {
       {/* Patient Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => alert("Go to Patient screen")}
+        onPress={() => navigation.navigate("PatientRegisterPage")}
       >
         <Text style={styles.buttonText}>Patient</Text>
       </TouchableOpacity>
