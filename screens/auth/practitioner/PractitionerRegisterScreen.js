@@ -9,7 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
 const PractitionerRegisterScreen = ({ navigation }) => {
-
+  const [name, setName] = useState("");
+  const [qualification, setQualification] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const role = "practitioner"; // hardcoded role for practitioner registration
@@ -21,11 +22,20 @@ const PractitionerRegisterScreen = ({ navigation }) => {
 
       // Save user role in Firestore
       await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
+        name: name,
+        qualification: qualification,
+        email: email,
         role: role // 'patient' or 'practitioner'
       });
 
       console.log("User registered successfully with role:", role);
+
+      // Persist user data to AsyncStorage
+      await AsyncStorage.multiSet([
+        ['uid', user.uid],
+        ['userRole', role],
+        ['userEmail', email],
+      ]);
 
       Alert.alert("Success", "Registered successfully! Please login to continue.", [
         { text: "OK", onPress: () => navigation.replace("PractitionerLoginPage") }
@@ -38,8 +48,24 @@ const PractitionerRegisterScreen = ({ navigation }) => {
     <View style={styles.container}>
 
       <Text>Practitioner Registration</Text>
+      <Text>Name</Text>
+      <TextInput style={styles.input} value={name}
+       onChangeText={setName}
+       keyboardType='default'
+       />
+
+      <Text>Qualification</Text>
+      <TextInput style={styles.input} value={qualification}
+       onChangeText={setQualification}
+       keyboardType='default'
+       />
+
       <Text>Email</Text>
-      <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+      <TextInput style={styles.input} value={email}
+       onChangeText={setEmail}
+       keyboardType='email-address'
+       autoCapitalize='none'
+       />
 
       <Text>Password</Text>
       <TextInput
