@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator()
 
 const AppNavigation = () => {
   return (
-    <Stack.Navigator initialRouteName= 'SplahScreenPage' screenOptions={{
+    <Stack.Navigator initialRouteName= "PractitionerRegisterPage" screenOptions={{
       headerShown:false
     }}>
 
