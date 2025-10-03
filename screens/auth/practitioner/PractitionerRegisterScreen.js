@@ -12,7 +12,7 @@ const PractitionerRegisterScreen = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("practitioner"); // default role for this screen
+  const role = "practitioner"; // hardcoded role for practitioner registration
 
   const handleRegister = async () => {
     try {
@@ -25,14 +25,9 @@ const PractitionerRegisterScreen = ({ navigation }) => {
         role: role // 'patient' or 'practitioner'
       });
 
-      // Persist minimal session/context
-      await AsyncStorage.multiSet([
-        ['uid', user.uid],
-        ['userRole', role],
-        ['userEmail', user.email ?? ''],
-      ]);
+      console.log("User registered successfully with role:", role);
 
-      Alert.alert("Success", "Registered successfully!", [
+      Alert.alert("Success", "Registered successfully! Please login to continue.", [
         { text: "OK", onPress: () => navigation.replace("PractitionerLoginPage") }
       ]);
     } catch (error) {

@@ -32,9 +32,11 @@ export default function LoginScreen({ navigation }) {
         ]);
 
         if (role === "practitioner") {
-          navigation.replace("PractitionerHome");
+          Alert.alert("Success", "Login successful!", [
+            { text: "OK", onPress: () => navigation.replace("PractitionerHomePage") }
+          ]);
         } else {
-          navigation.replace("PatientHome");
+          Alert.alert("Access Denied", "This login is for practitioners only.");
         }
       } else {
         Alert.alert("Login Issue", "No user data found.");
