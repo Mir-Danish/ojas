@@ -1,9 +1,9 @@
 // WelcomeScreen.js
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform, StatusBar } from "react-native";
 
-const WelcomeScreen  = () => {
+const SplashScreen  = () => {
   const navigation = useNavigation()
   return (
     <View style={styles.container}>
@@ -29,9 +29,12 @@ const WelcomeScreen  = () => {
   );
 }
 
+export default SplashScreen
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop:Platform.OS === "android" ? StatusBar.currentHeight:0,
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
