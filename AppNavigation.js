@@ -15,11 +15,11 @@ const Stack = createNativeStackNavigator()
 
 const AppNavigation = () => {
   return (
-    <Stack.Navigator initialRouteName= "SplahScreenPage" screenOptions={{
+    <Stack.Navigator initialRouteName= "PractitionerHomeScreen" screenOptions={{
       headerShown:false
     }}>
 
-        <Stack.Screen name='SplahScreenPage' component={SplashScreen} />
+        <Stack.Screen name='PractitionerHomeScreen' component={PractitionerHomeScreen} />
 
         <Stack.Screen name='PatientLoginPage' component={UserLoginScreen} />
         <Stack.Screen name='PatientRegisterPage' component={UserregisterScreen} />
