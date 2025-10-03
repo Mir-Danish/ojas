@@ -1,4 +1,4 @@
-import { View, TextInput, Button, Text, StyleSheet, Platform, StatusBar, Alert } from "react-native";
+import { View, TextInput, Text, StyleSheet, Platform, StatusBar, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from 'react'
 import { doc, getDoc } from "firebase/firestore";
@@ -45,57 +45,150 @@ export default function UserLoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>User Login</Text>
-      
-      <Text>Email</Text>
-      <TextInput 
-        style={styles.input} 
-        value={email} 
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>Patient Login</Text>
+          <Text style={styles.subtitle}>Welcome back! Sign in to continue</Text>
+        </View>
 
-      <Text>Password</Text>
-      <TextInput
-        style={styles.input}
-        value={password}
-        secureTextEntry
-        onChangeText={setPassword}
-      />
+        <View style={styles.form}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email Address</Text>
+            <TextInput 
+              style={styles.input} 
+              value={email} 
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholder="your.email@example.com"
+              placeholderTextColor="#999"
+            />
+          </View>
 
-      <Button title="Login" onPress={handleLogin} />
-      <Text style={styles.link} onPress={() => navigation.navigate("PatientRegisterPage")}>
-        Don't have an account? Register
-      </Text>
-    </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              secureTextEntry
+              onChangeText={setPassword}
+              placeholder="Enter your password"
+              placeholderTextColor="#999"
+            />
+          </View>
+
+          <TouchableOpacity 
+            style={styles.loginButton} 
+            onPress={handleLogin}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("PatientRegisterPage")}>
+              <Text style={styles.link}>Register</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f7fa',
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    marginHorizontal: 15,
-    justifyContent: "center" 
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  header: {
+    marginBottom: 32,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#1a1a1a',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: '#666',
+  },
+  form: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  inputGroup: {
     marginBottom: 20,
-    textAlign: 'center'
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 5,
+    borderColor: '#e0e0e0',
+    backgroundColor: '#fafafa',
+    padding: 14,
+    borderRadius: 10,
+    fontSize: 15,
+    color: '#1a1a1a',
+  },
+  loginButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 8,
+    shadowColor: '#2196F3',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#666',
   },
   link: {
-    marginTop: 10,
-    color: "blue",
-    textAlign: "center",
+    fontSize: 14,
+    color: '#2196F3',
+    fontWeight: '600',
   },
 })

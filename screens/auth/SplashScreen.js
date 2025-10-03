@@ -7,24 +7,62 @@ const SplashScreen  = () => {
   const navigation = useNavigation()
   return (
     <View style={styles.container}>
-      {/* Get Started Text */}
-      <Text style={styles.heading}>Get Started</Text>
+      <View style={styles.content}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Text style={styles.appName}>OJAS</Text>
+          <Text style={styles.tagline}>Healthcare Management System</Text>
+        </View>
 
-      {/* Practitioner Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={()=>navigation.navigate("PractitionerRegisterPage")}
-      >
-        <Text style={styles.buttonText}>Practitioner</Text>
-      </TouchableOpacity>
+        {/* Welcome Text */}
+        {/* <View style={styles.welcomeSection}>
+          <Text style={styles.heading}>Get Started</Text>
+          <Text style={styles.subheading}>Choose your role to continue</Text>
+        </View> */}
 
-      {/* Patient Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate("PatientRegisterPage")}
-      >
-        <Text style={styles.buttonText}>Patient</Text>
-      </TouchableOpacity>
+        {/* Buttons Section */}
+        <View style={styles.buttonContainer}>
+          {/* Practitioner Button */}
+          <TouchableOpacity
+            style={[styles.button, styles.practitionerButton]}
+            onPress={() => navigation.navigate("PractitionerRegisterPage")}
+            activeOpacity={0.8}
+          >
+            <View style={styles.buttonContent}>
+              <Text style={styles.buttonIcon}>👨‍⚕️</Text>
+              <Text style={styles.buttonText}>Practitioner</Text>
+              <Text style={styles.buttonSubtext}>For healthcare professionals</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Patient Button */}
+          <TouchableOpacity
+            style={[styles.button, styles.patientButton]}
+            onPress={() => navigation.navigate("PatientLoginPage")}
+            activeOpacity={0.8}
+          >
+            <View style={styles.buttonContent}>
+              <Text style={styles.buttonIcon}>🧑‍💼</Text>
+              <Text style={styles.buttonText}>Patient</Text>
+              <Text style={styles.buttonSubtext}>For patients seeking care</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Already have an account?</Text>
+          <View style={styles.loginLinks}>
+            <TouchableOpacity onPress={() => navigation.navigate("PractitionerLoginPage")}>
+              <Text style={styles.loginLink}>Practitioner Login</Text>
+            </TouchableOpacity>
+            <Text style={styles.separator}> | </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("PatientLoginPage")}>
+              <Text style={styles.loginLink}>Patient Login</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </View>
   );
 }
@@ -34,29 +72,102 @@ export default SplashScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:Platform.OS === "android" ? StatusBar.currentHeight:0,
-    backgroundColor: "#fff",
-    justifyContent: "center",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: "#f5f7fa",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "space-between",
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+  },
+  header: {
     alignItems: "center",
-    padding: 20,
+    marginTop: 20,
+  },
+  appName: {
+    fontSize: 48,
+    fontWeight: "bold",
+    color: "#4CAF50",
+    letterSpacing: 2,
+  },
+  tagline: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 8,
+    letterSpacing: 1,
+  },
+  welcomeSection: {
+    alignItems: "center",
+    marginTop: -40,
   },
   heading: {
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 50,
-    color: "#222",
+    color: "#1a1a1a",
+    marginBottom: 8,
+  },
+  subheading: {
+    fontSize: 16,
+    color: "#666",
+  },
+  buttonContainer: {
+    gap: 16,
   },
   button: {
-    width: "80%",
-    paddingVertical: 15,
-    backgroundColor: "#4a90e2",
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  practitionerButton: {
+    backgroundColor: "#4CAF50",
+  },
+  patientButton: {
+    backgroundColor: "#2196F3",
+  },
+  buttonContent: {
     alignItems: "center",
+  },
+  buttonIcon: {
+    fontSize: 48,
+    marginBottom: 12,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  buttonSubtext: {
+    color: "#fff",
+    fontSize: 13,
+    opacity: 0.9,
+  },
+  footer: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  footerText: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 12,
+  },
+  loginLinks: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  loginLink: {
+    fontSize: 14,
+    color: "#4CAF50",
     fontWeight: "600",
+  },
+  separator: {
+    fontSize: 14,
+    color: "#999",
+    marginHorizontal: 8,
   },
 });
