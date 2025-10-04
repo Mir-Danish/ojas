@@ -77,8 +77,7 @@ Problem Number 25: AyurSutra-Panchakarma Patient Management And Therapy Scheduli
 npx create-expo-app ojas-app
 cd ojas-app
 
-bash```
-```bash
+
 Special Note:
 git clone https://github.com/Mir-Danish/ojas
 npm install
