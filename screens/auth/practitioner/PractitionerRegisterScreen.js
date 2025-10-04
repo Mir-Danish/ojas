@@ -7,6 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig"     //"./firebaseConfig";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import SplashScreen from '../SplashScreen';
 
 const PractitionerRegisterScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -177,6 +178,11 @@ const PractitionerRegisterScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+
+        <TouchableOpacity style={{fontSize:16, color:"black",marginHorizontal:120,marginTop:20, alignItems:"center",justifyContent:"center",backgroundColor:"black",width:100,height:40,borderRadius:25}} onPress={()=>navigation.navigate("SplashScreen")}>
+          <Text style={{color:"white"}}>Back</Text>
+        </TouchableOpacity>
+
       </ScrollView>
     </KeyboardAvoidingView>
   )
@@ -272,5 +278,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#4CAF50',
     fontWeight: '600',
+  },
+  backButton: {
+   
   },
 })

@@ -112,6 +112,10 @@ const CollectUserDetails = ({ navigation }) => {
       // Generate unique session ID
       const sessionId = generateSessionId();
       
+      // Debug: Log practitioner info
+      // console.log("Practitioner ID being saved:", practitioner?.id);
+      // console.log("Practitioner object:", practitioner);
+      
       // Save therapy session to Firestore
       await addDoc(collection(db, "therapySessions"), {
         sessionId: sessionId,
@@ -139,11 +143,11 @@ const CollectUserDetails = ({ navigation }) => {
         "Success", 
         `Your therapy session has been scheduled!\n\nSession ID: ${sessionId}\nDate: ${formatDate(selectedDate)}\nTime: ${formatTime(selectedTime)}\n\nThe practitioner will confirm your appointment soon.`,
         [
-          { text: "OK", onPress: () => navigation.goback()}
+          { text: "OK", onPress: () => navigation.navigate("UserProfilePage")}
         ]
       );
     } catch (error) {
-      console.error("Error submitting session:", error);
+      // console.error("Error submitting session:", error);
       Alert.alert("Error", "Failed to schedule session. Please try again.");
     } finally {
       setLoading(false);
@@ -424,7 +428,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   submitButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#FACFCA',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
@@ -436,7 +440,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   submitButtonText: {
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 16,
     fontWeight: 'bold',
   },

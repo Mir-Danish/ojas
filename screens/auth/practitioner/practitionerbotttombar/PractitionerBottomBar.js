@@ -8,13 +8,15 @@ import { useNavigation } from '@react-navigation/native';
 const BottomBar = () => {
   const changeScreen = useNavigation();
   return (
-    <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center", backgroundColor:"#2AA10F", width:"100%",height:70,padding:10}}>
+    <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center", backgroundColor:"#C9A5A1", width:"100%",height:70,padding:10,borderRadius:15}}>
 
-      <TouchableOpacity onPress={()=> changeScreen.navigate("Home")} activeOpacity={0.7}>
+      <TouchableOpacity onPress={()=> changeScreen.navigate("PractitionerHomePage")} activeOpacity={0.7}>
       <AntDesign name="home" size={24} color="white" />
         </TouchableOpacity>
 
-
+        <TouchableOpacity onPress={()=> changeScreen.navigate("PrePostUserDetailsPage")} activeOpacity={0.7}>
+        <AntDesign name="whats-app" size={24} color="white" />
+        </TouchableOpacity>
         {/* <TouchableOpacity onPress={()=>changeScreen.navigate("SearchScreen")} activeOpacity={0.7}>
             <FontAwesome6 name='search' size={28} color="white"/>
             </TouchableOpacity> */}
@@ -26,8 +28,10 @@ const BottomBar = () => {
         {/* <TouchableOpacity onPress={()=>changeScreen.navigate("FavouriteScreen")} activeOpacity={0.7}>
         <FontAwesome6 name="heart" size={30} color="white"/>
         </TouchableOpacity> */}
-        <TouchableOpacity onPress={()=>changeScreen.navigate("UserProfileScreen")} activeOpacity={0.7}>
-        <FontAwesome6 name="user" size={30} color="white"/>
+
+        
+        <TouchableOpacity onPress={()=>changeScreen.navigate("PractitionerUserProfilePage")} activeOpacity={0.7}>
+        <FontAwesome6 name="user" size={24} color="white"/>
         </TouchableOpacity>
         
 

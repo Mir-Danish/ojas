@@ -8,15 +8,15 @@ import { useNavigation } from '@react-navigation/native';
 const UserBottomBar = () => {
     const navigation = useNavigation();
   return (
-     <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center", backgroundColor:"#2AA10F", width:"100%",height:70,padding:10}}>
+     <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center", backgroundColor:"#C9A5A1", width:"100%",height:70,padding:10}}>
    
          <TouchableOpacity onPress={()=> navigation.navigate("PatientHomePage")} activeOpacity={0.7}>
          <AntDesign name="home" size={24} color="white" />
            </TouchableOpacity>
 
-           <TouchableOpacity onPress={()=>navigation.navigate("UserBottomPage")} activeOpacity={0.7}>
+           {/* <TouchableOpacity onPress={()=>navigation.navigate("UserBottomPage")} activeOpacity={0.7}>
            <FontAwesome6 name="bars-progress" size={24} color="black" />
-           </TouchableOpacity>
+           </TouchableOpacity> */}
    
 
            

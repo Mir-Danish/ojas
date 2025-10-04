@@ -158,6 +158,9 @@ const UserregisterScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
+         <TouchableOpacity style={{fontSize:16, color:"black",marginHorizontal:120,marginTop:20, alignItems:"center",justifyContent:"center",backgroundColor:"black",width:100,height:40,borderRadius:25}} onPress={()=>navigation.navigate("SplashScreen")}>
+                  <Text style={{color:"white"}}>Back</Text>
+                </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   )

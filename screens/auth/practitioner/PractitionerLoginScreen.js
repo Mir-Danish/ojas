@@ -55,7 +55,9 @@ export default function LoginScreen({ navigation }) {
             { text: "OK", onPress: () => navigation.replace("PractitionerHomePage") }
           ]);
         } else {
-          Alert.alert("Access Denied", "This login is for practitioners only.");
+          // Clear AsyncStorage if wrong role
+          await AsyncStorage.clear();
+          Alert.alert("Access Denied", "This login is for practitioners only. Please use the correct login page.");
         }
       } else {
         Alert.alert("Login Issue", "No user data found.");
@@ -128,6 +130,10 @@ export default function LoginScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
+
+         <TouchableOpacity style={{fontSize:16, color:"black",marginHorizontal:120,marginTop:20, alignItems:"center",justifyContent:"center",backgroundColor:"black",width:100,height:40,borderRadius:25}} onPress={()=>navigation.navigate("SplashScreen")}>
+                  <Text style={{color:"white"}}>Back</Text>
+                </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );

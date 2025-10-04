@@ -1,11 +1,16 @@
-import { StyleSheet, Text, View, Platform, StatusBar, ActivityIndicator, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Platform, StatusBar, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomBar from "../UserBottomBar/UserBottomBar";
-import { db } from "../../firebaseConfig";
+import { db, auth } from "../../firebaseConfig";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AntDesign } from '@expo/vector-icons';
 
 const UserProfileScreen = () => {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,15 +20,34 @@ const UserProfileScreen = () => {
       setLoading(true);
       try {
         const userId = await AsyncStorage.getItem('uid');
+        const userEmail = await AsyncStorage.getItem('userEmail');
+        
         if (!userId) return setLoading(false);
 
-        // Fetch user profile
+        // First, fetch user data from Firestore users collection
         const userDoc = await getDoc(doc(db, "users", userId));
+        let userData = {
+          name: 'User',
+          email: userEmail,
+          phoneNumber: '',
+          gender: '',
+          address: ''
+        };
+
         if (userDoc.exists()) {
-          setUser(userDoc.data());
+          const userFirestoreData = userDoc.data();
+          userData = {
+            name: userFirestoreData.name || 'User',
+            email: userFirestoreData.email || userEmail,
+            phoneNumber: userFirestoreData.phoneNumber || '',
+            gender: userFirestoreData.gender || '',
+            address: userFirestoreData.address || ''
+          };
         }
 
-        // Fetch latest therapy session
+        setUser(userData);
+
+        // Fetch therapy sessions for this patient
         const q = query(
           collection(db, "therapySessions"),
           where("patientId", "==", userId)
@@ -45,7 +69,8 @@ const UserProfileScreen = () => {
           });
           
           // Get the most recent session
-          setSession(sessions[0]);
+          const latestSession = sessions[0];
+          setSession(latestSession);
         }
       } catch (error) {
         console.error("Error fetching profile/session:", error);
@@ -55,6 +80,41 @@ const UserProfileScreen = () => {
 
     fetchProfileAndSession();
   }, []);
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Sign out from Firebase
+              await signOut(auth);
+              
+              // Clear AsyncStorage
+              await AsyncStorage.clear();
+              
+              // Navigate to splash/login screen
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'SplashScreen' }],
+              });
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Error', 'Failed to logout. Please try again.');
+            }
+          }
+        }
+      ]
+    );
+  };
 
   if (loading) {
     return (
@@ -69,6 +129,9 @@ const UserProfileScreen = () => {
     <>
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
+          <TouchableOpacity style={styles.logoutIcon} onPress={handleLogout}>
+            <Icon name="logout" size={24} color="#F44336" />
+          </TouchableOpacity>
           <View style={styles.avatarContainer}>
             <Text style={{ fontSize: 40, color: '#4CAF50' }}>
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
@@ -134,6 +197,14 @@ const UserProfileScreen = () => {
             )}
           </View>
         </View>
+
+        <View style={styles.section}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            {/* <Icon name="logout" size={20} color="#fff" /> */}
+            <AntDesign name="logout" size={24} color="black" />
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
       <BottomBar />
     </>
@@ -167,6 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 30,
     backgroundColor: '#fff',
+    position: 'relative',
     // borderBottomLeftRadius: 30,
     // borderBottomRightRadius: 30,
     shadowColor: '#000',
@@ -174,6 +246,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     // elevation: 3,
+  },
+  logoutIcon: {
+    position: 'absolute',
+    top: 15,
+    right: 20,
+    padding: 8,
+    zIndex: 10,
   },
   avatarContainer: {
     width: 100,

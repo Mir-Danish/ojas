@@ -33,6 +33,9 @@ export default function UserLoginScreen({ navigation }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      console.log("User logged in - UID:", user.uid);
+      console.log("User email:", user.email);
+
       // Get user role from Firestore
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
@@ -41,6 +44,9 @@ export default function UserLoginScreen({ navigation }) {
         const userData = docSnap.data();
         const role = userData.role;
 
+        console.log("User data from Firestore:", userData);
+        console.log("User role:", role);
+
         // Persist minimal session/context
         await AsyncStorage.multiSet([
           ['uid', user.uid],
@@ -48,14 +54,19 @@ export default function UserLoginScreen({ navigation }) {
           ['userEmail', user.email ?? ''],
         ]);
 
+        console.log("Data saved to AsyncStorage - UID:", user.uid);
+
         if (role === "patient") {
           Alert.alert("Success", "Login successful!", [
             { text: "OK", onPress: () => navigation.replace("PatientHomePage") }
           ]);
         } else {
-          Alert.alert("Access Denied", "This login is for users/patients only.");
+          // Clear AsyncStorage if wrong role
+          await AsyncStorage.clear();
+          Alert.alert("Access Denied", "This login is for users/patients only. Please use the correct login page.");
         }
       } else {
+        console.log("No user document found in Firestore for UID:", user.uid);
         Alert.alert("Login Issue", "No user data found.");
       }
     } catch (error) {
@@ -145,6 +156,9 @@ export default function UserLoginScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
+ <TouchableOpacity style={{fontSize:16, color:"black",marginHorizontal:120,marginTop:20, alignItems:"center",justifyContent:"center",backgroundColor:"black",width:100,height:40,borderRadius:25}} onPress={()=>navigation.navigate("SplashScreen")}>
+          <Text style={{color:"white"}}>Back</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );

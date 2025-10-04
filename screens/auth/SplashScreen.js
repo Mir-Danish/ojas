@@ -1,7 +1,7 @@
 // WelcomeScreen.js
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Platform, StatusBar } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform, StatusBar, Image } from "react-native";
 
 const SplashScreen  = () => {
   const navigation = useNavigation()
@@ -9,7 +9,14 @@ const SplashScreen  = () => {
     <View style={styles.container}>
       <View style={styles.content}>
         {/* Header Section */}
+
         <View style={styles.header}>
+          {/* <View style={{width:120,height:120,borderRadius:25}}>
+
+          <Image source={require("../app_assets/logo_img.png")} style={{height:120,width:120, marginBottom: 20,}}  />
+
+           </View> */}
+          
           <Text style={styles.appName}>OJAS</Text>
           <Text style={styles.tagline}>Healthcare Management System</Text>
         </View>
@@ -25,7 +32,7 @@ const SplashScreen  = () => {
           {/* Practitioner Button */}
           <TouchableOpacity
             style={[styles.button, styles.practitionerButton]}
-            onPress={() => navigation.navigate("PractitionerRegisterPage")}
+            onPress={() => navigation.navigate("PractitionerLoginPage")}
             activeOpacity={0.8}
           >
             <View style={styles.buttonContent}>
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   practitionerButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#FACFCA",
   },
   patientButton: {
     backgroundColor: "#2196F3",
@@ -137,13 +144,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   buttonText: {
-    color: "#fff",
+    color: "#0e0101ff",
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 4,
   },
   buttonSubtext: {
-    color: "#fff",
+    color: "#030101ff",
     fontSize: 13,
     opacity: 0.9,
   },
