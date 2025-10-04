@@ -1,8 +1,8 @@
 // geminiConfig.js
 
-export const GEMINI_API_KEY = "AIzaSyDL0PpdtcKxNPRMSPGXtZBFbuzZ6PiZFTI"
+export const GEMINI_API_KEY = ""
 
-export const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`
+export const GEMINI_API_URL = `?key=${GEMINI_API_KEY}`
 
 // System prompt for Ayurvedic AI assistant
 export const SYSTEM_PROMPT = `You are an expert Ayurvedic AI assistant named Ojas AI. 
