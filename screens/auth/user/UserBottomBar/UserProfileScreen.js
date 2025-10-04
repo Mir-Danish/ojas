@@ -129,9 +129,6 @@ const UserProfileScreen = () => {
     <>
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.logoutIcon} onPress={handleLogout}>
-            <Icon name="logout" size={24} color="#F44336" />
-          </TouchableOpacity>
           <View style={styles.avatarContainer}>
             <Text style={{ fontSize: 40, color: '#4CAF50' }}>
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
