@@ -60,7 +60,7 @@ Problem Number 25: AyurSutra-Panchakarma Patient Management And Therapy Scheduli
 
 ## 🛠️ Tech Stack
 - [React Native](https://reactnative.dev/) + [Expo](https://expo.dev/)  
-- [Firebase](https://firebase.google.com/)  
+- [Firebase](https://firebase.google.com/)   for Database
 - [React Navigation](https://reactnavigation.org/)  
 - [AsyncStorage](https://react-native-async-storage.github.io/async-storage/)  
 - [React Native Vector Icons](https://github.com/oblador/react-native-vector-icons)  
